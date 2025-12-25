@@ -1,0 +1,9 @@
+# deps
+node_modules/
+
+# build
+dist/
+*.bun-build
+
+# db
+eptrc.sqlite*
