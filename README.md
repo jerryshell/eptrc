@@ -2,7 +2,9 @@
 
 [中文](./README.md) | [English](./README.en.md)
 
-EPTRC（Easy Payment TRC）是一个轻量级 TRC20-USDT 支付网关。
+EPTRC（Easy Payment TRC）是一个轻量级 TRC20-USDT 支付网关
+
+商户系统可以通过简单的 HTTP API + Webhook 轻松集成 USDT 收款能力
 
 ## 快速开始
 
@@ -46,11 +48,14 @@ bun run dev
 
 ## API
 
+- 业务处理成功：返回 `HTTP 200`
+- 业务处理失败：返回 `HTTP 4xx` 或 `HTTP 5xx`
+
 ### 健康检查
 
 `GET /`
 
-响应示例：
+响应体示例（HTTP 200）：
 
 ```json
 {
@@ -76,7 +81,7 @@ bun run dev
 - `notifyUrl`: 必填，支付结果回调地址
 - `metadata`: 选填，会在 webhook 中原样透传
 
-成功响应示例：
+成功响应体示例（HTTP 200）：
 
 ```json
 {
@@ -98,7 +103,24 @@ bun run dev
 }
 ```
 
-可用于查询会话状态、支付金额、链上交易 ID、是否已归集。
+可用于查询会话状态、支付金额、链上交易 ID、是否已归集
+
+成功响应体示例（HTTP 200）：
+
+```json
+{
+  "id": "019bf34f-9bec-7000-9b43-2ff5f5b0427d",
+  "metadata": "{\"orderId\":\"order.123\",\"userId\":\"user.456\"}",
+  "amount": "1000000",
+  "notifyUrl": "https://api.merchant-system.com/eptrcNotify",
+  "address": "TTU6hE7tn9UX9XxcbQ3fZMZY3SH4GfMYZy",
+  "status": "paid",
+  "collected": 0,
+  "blockchainTxId": "2a6a...",
+  "paidAt": 1577934200000,
+  "expiresAt": 1577934245000
+}
+```
 
 ### 钱包归集
 
@@ -118,7 +140,7 @@ bun run dev
 - 请确保该私钥对应地址有足够 TRX
 - 不要在前端、日志或公开渠道暴露该私钥
 
-响应示例：
+成功响应体示例（HTTP 200）：
 
 ```json
 {
@@ -144,7 +166,7 @@ bun run dev
 
 ## Webhook
 
-当会话状态变化时，EPTRC 会向 `notifyUrl` 发送 `POST`。
+当会话状态变化时，EPTRC 会向 `notifyUrl` 发送 `POST`
 
 请求头：
 
@@ -153,6 +175,12 @@ X-API-KEY: <WEBHOOK_KEY>
 Content-Type: application/json
 User-Agent: EPTRC/<version>
 ```
+
+商户服务返回要求：
+
+- 必须返回 `HTTP 200`，EPTRC 才会判定该次 Webhook 投递成功
+- 返回非 `200` 状态码会按失败处理并进入重试（最大重试次数：10）
+- 务必校验请求头 `X-API-KEY` 是否等于当前运行环境配置的 `WEBHOOK_KEY`，不匹配应拒绝请求
 
 事件类型：
 
