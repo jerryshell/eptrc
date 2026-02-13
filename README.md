@@ -79,7 +79,7 @@ bun run dev
 ```
 
 - `notifyUrl`: 必填，支付结果回调地址
-- `metadata`: 选填，会在 webhook 中原样透传
+- `metadata`: 选填，可传任意字符串，会在 webhook 中原样透传；推荐使用 JSON Object 字符串，方便商户反序列化
 
 成功响应体示例（HTTP 200）：
 

@@ -79,7 +79,7 @@ Request body:
 ```
 
 - `notifyUrl`: required, callback URL for payment result
-- `metadata`: optional, passed through unchanged in Webhook payload
+- `metadata`: optional, can be any string and is passed through unchanged in Webhook payload; JSON object string is recommended for easier deserialization on merchant side
 
 Successful response body example (HTTP 200):
 
