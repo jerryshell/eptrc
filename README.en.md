@@ -10,7 +10,6 @@ Merchant systems can integrate USDT collection with simple HTTP APIs and Webhook
 
 ```bash
 bun install
-bun run db:push
 bun run dev
 ```
 

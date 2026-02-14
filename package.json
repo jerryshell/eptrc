@@ -3,12 +3,15 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "check": "bunx tsc --noEmit --skipLibCheck",
+    "ci": "bun run check && bun run db:check",
+    "db:generate": "bunx --bun drizzle-kit generate",
+    "db:check": "bun run script/check-migrations.ts",
     "db:push": "bunx --bun drizzle-kit push",
-    "build:bun": "bun build src/index.ts --target=bun --production --outdir=dist",
-    "build:linux-x64": "bun build src/index.ts --target bun-linux-x64-modern --production --compile --minify --sourcemap --bytecode --outfile dist/${npm_package_name}-linux-x64",
-    "build:windows-x64": "bun build src/index.ts --target bun-windows-x64-modern --production --compile --minify --sourcemap --bytecode --outfile dist/${npm_package_name}-windows-x64",
-    "build:darwin-x64": "bun build src/index.ts --target bun-darwin-x64-modern --production --compile --minify --sourcemap --bytecode --outfile dist/${npm_package_name}-darwin-x64",
-    "build:darwin-arm64": "bun build src/index.ts --target bun-darwin-arm64-modern --production --compile --minify --sourcemap --bytecode --outfile dist/${npm_package_name}-darwin-arm64"
+    "build:bun": "bun run script/build.ts bun",
+    "build:linux-x64": "bun run script/build.ts linux-x64",
+    "build:windows-x64": "bun run script/build.ts windows-x64",
+    "build:darwin-x64": "bun run script/build.ts darwin-x64",
+    "build:darwin-arm64": "bun run script/build.ts darwin-arm64"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.6",

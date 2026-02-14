@@ -10,7 +10,6 @@ EPTRC（Easy Payment TRC）是一个轻量级 TRC20-USDT 支付网关
 
 ```bash
 bun install
-bun run db:push
 bun run dev
 ```
 
