@@ -18,7 +18,8 @@ Default service URL: `http://localhost:3000`
 ## Scripts
 
 - `bun run dev`: start local development server (hot reload)
-- `bun run check`: run TypeScript type checking
+- `bun run lint`: run oxlint
+- `bun run lint:fix`: run oxlint with auto fixes
 - `bun run db:push`: push Drizzle schema to the database
 - `bun run build:bun`: build Bun runtime version to `dist/`
 - `bun run build:linux-x64`: build Linux x64 executable

@@ -18,7 +18,8 @@ bun run dev
 ## Scripts
 
 - `bun run dev`: 本地开发启动（热更新）
-- `bun run check`: TypeScript 类型检查
+- `bun run lint`: 运行 oxlint
+- `bun run lint:fix`: 运行 oxlint 并自动修复
 - `bun run db:push`: 推送 Drizzle schema 到数据库
 - `bun run build:bun`: 构建 Bun 运行时版本到 `dist/`
 - `bun run build:linux-x64`: 构建 Linux x64 可执行文件

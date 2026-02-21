@@ -196,7 +196,7 @@ export const notifyTask = async () => {
       } else {
         await markNotifyRetried(pendingNotify);
       }
-    } catch (error) {
+    } catch {
       await markNotifyRetried(pendingNotify);
     }
   }
