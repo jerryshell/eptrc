@@ -2,47 +2,50 @@
 
 ## Project Structure & Module Organization
 
-- `src/` contains the Bun + Hono service.
-- `src/index.ts` defines HTTP routes and background intervals.
-- `src/db/` holds Drizzle setup and schema (`schema.ts`).
-- `src/task.ts` and `src/utils.ts` provide polling jobs and Tron helpers.
-- `test/` contains runnable integration scripts (not unit-test specs).
-- `dist/` is build output for runtime and compiled binaries.
-- Root config files: `package.json`, `tsconfig.json`, `drizzle.config.ts`, `.env`.
+- `src/` contains the Bun + Hono service entrypoint and business logic.
+- `src/index.ts` defines HTTP routes and starts interval-based background tasks.
+- `src/db/` stores Drizzle ORM setup and table definitions (`schema.ts`).
+- `src/task.ts`, `src/utils.ts`, and `src/middleware.ts` contain task, helper, and auth logic.
+- `script/` includes maintenance/build scripts (`build.ts`, `check-migrations.ts`).
+- `drizzle/` contains generated migration SQL and snapshots.
+- `test/` includes runnable integration scripts per API behavior.
+- `dist/` is generated output and should not be edited by hand.
 
 ## Build, Test, and Development Commands
 
-- `bun install`: install dependencies.
-- `bun run dev`: start local server with hot reload at `http://localhost:3000`.
-- `bun run check`: run TypeScript type checks (`bunx tsc --noEmit`).
-- `bun run db:push`: push Drizzle schema to the SQLite DB.
-- `bun run build:bun`: build Bun target into `dist/`.
-- `bun run build:linux-x64` (or `build:windows-x64`, `build:darwin-*`): build standalone binaries.
-- Integration example: run `bun run dev`, then `bun test/paymentSession.create.ts`.
+- `bun install`: install project dependencies.
+- `bun run dev`: run the API locally with hot reload (`http://localhost:3000`).
+- `bun run lint`: run `oxlint` checks.
+- `bun run lint:fix`: apply lint autofixes where available.
+- `bun run db:generate`: generate Drizzle migrations after schema changes.
+- `bun run db:check`: verify schema and migration files are in sync.
+- `bun run db:push`: apply schema changes to the configured SQLite DB.
+- `bun run build:bun` or `bun run build:windows-x64`: build distributables into `dist/`.
+- `bun run test/paymentSession.create.ts`: run an integration script (start `bun run dev` first).
 
 ## Coding Style & Naming Conventions
 
-- Language: TypeScript (ESNext modules).
-- Indentation: 2 spaces; keep trailing commas where used.
-- Naming: `camelCase` for variables/functions, `PascalCase` for types, descriptive constants.
-- Keep route handlers small; move blockchain/db helpers to `src/utils.ts` or `src/task.ts`.
-- Run `bun run check` before opening a PR.
+- Language: TypeScript (ESNext modules) with Bun runtime.
+- Use 2-space indentation, semicolons, double quotes, and trailing commas where appropriate.
+- Use `camelCase` for variables/functions, `PascalCase` for types, and descriptive constant names.
+- Keep route handlers readable; move reusable logic into `src/utils.ts` or `src/task.ts`.
+- Follow existing file naming patterns such as `paymentSession.create.ts` and `wallet.collect.ts`.
 
 ## Testing Guidelines
 
-- Tests are integration scripts under `test/*.ts`.
-- Name new tests by endpoint/action (e.g., `paymentSession.refund.ts`).
-- Validate HTTP status and JSON body fields in each script.
-- No enforced coverage threshold yet.
+- Current tests are integration scripts in `test/*.ts`, not a unit-test framework.
+- Add new test files using `<resource>.<action>.ts` naming.
+- For endpoint changes, validate both HTTP status and key response fields.
+- Before opening a PR, run relevant integration scripts plus `bun run lint` and `bun run db:check`.
 
 ## Commit & Pull Request Guidelines
 
-- Use concise, imperative commit subjects; prefer Conventional Commit style (`feat:`, `fix:`, `chore:`).
-- Keep commits focused and logically grouped.
-- PRs should include: purpose, key API/database changes, test evidence (commands + outputs), and env/config updates.
+- Commit style in this repo follows Conventional Commits (e.g., `feat:`, `fix:`, `docs:`, `chore:`).
+- Keep each commit focused on one logical change.
+- PRs should include: goal, impacted endpoints/schema, commands run for validation, and any required env updates.
 
 ## Security & Configuration Tips
 
-- Never commit real API keys or private keys; keep secrets in `.env`.
-- Treat `feePayerPrivateKey` and wallet keys as sensitive and avoid logging them.
-- Use `TRON_NETWORK=nile` for testnet validation before mainnet changes.
+- Never commit real secrets (`API_KEY`, `WEBHOOK_KEY`, private keys) or production wallet data.
+- Keep sensitive values in `.env`; avoid logging private keys in debug output.
+- Validate on `TRON_NETWORK=nile` before proposing mainnet-impacting changes.
