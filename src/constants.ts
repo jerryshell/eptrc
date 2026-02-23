@@ -1,4 +1,4 @@
-export const version = "1.0.0";
+export const version = "1.1.0";
 export const apiKey = process.env.API_KEY ?? "it.is.very.secret";
 export const webhookKey = process.env.WEBHOOK_KEY ?? apiKey;
 export const dbFileName = process.env.DB_FILE_NAME ?? "eptrc.sqlite";
