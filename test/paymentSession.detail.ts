@@ -1,7 +1,7 @@
 import { sendEptrcRequest } from "../src/utils";
 
 const paymentSessionDetailRequestBody = JSON.stringify({
-  paymentSessionId: "019bf34f-9bec-7000-9b43-2ff5f5b0427d",
+  paymentSessionId: "019c8a98-c808-7000-9e3e-d427291534c7",
 });
 console.dir({ paymentSessionDetailRequestBody });
 

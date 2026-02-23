@@ -19,12 +19,12 @@ import { auth } from "./middleware";
 import { notifyTask, paymentSessionTask } from "./task";
 import { getTrc20Balance, sendTrc20Transaction } from "./utils";
 
-type WalletCollectionResult = {
+type WalletCollectResult = {
   address: string;
   status: "collected" | "no.balance" | "error";
   amount?: string;
   txId?: string;
-  error?: "collection.failed";
+  error?: "collect.failed";
 };
 
 const app = new Hono();
@@ -138,10 +138,10 @@ app.post(
   },
 );
 
-// Wallet collection
+// Wallet collect
 app.use("/wallet/*", auth);
 app.post(
-  "/wallet/collection",
+  "/wallet/collect",
   zValidator(
     "json",
     z.object({
@@ -172,16 +172,16 @@ app.post(
         ),
       );
 
-    const collectionResults: WalletCollectionResult[] = [];
+    const collectResults: WalletCollectResult[] = [];
 
     for (const collectibleWalletSession of collectibleWalletSessions) {
       const { session, wallet } = collectibleWalletSession;
 
-      const collectionResult: WalletCollectionResult = {
+      const collectResult: WalletCollectResult = {
         address: wallet.address,
         status: "no.balance",
       };
-      console.dir({ collectionResult });
+      console.dir({ collectResult });
 
       try {
         const walletTokenBalance = await getTrc20Balance({
@@ -191,11 +191,11 @@ app.post(
         console.dir({ walletTokenBalance });
 
         if (walletTokenBalance === "0") {
-          collectionResults.push(collectionResult);
+          collectResults.push(collectResult);
           continue;
         }
 
-        const collectionTxId = await sendTrc20Transaction({
+        const collectTxId = await sendTrc20Transaction({
           privateKey: wallet.privateKey,
           feePayerPrivateKey,
           toAddress,
@@ -208,23 +208,23 @@ app.post(
           .set({ collected: 1, collectedAt: Date.now() })
           .where(eq(paymentSessionTable.id, session.id));
 
-        collectionResult.status = "collected";
-        collectionResult.amount = walletTokenBalance;
-        collectionResult.txId = collectionTxId;
+        collectResult.status = "collected";
+        collectResult.amount = walletTokenBalance;
+        collectResult.txId = collectTxId;
       } catch (error) {
         console.error(
           `Failed to collect TRC20 from wallet ${wallet.address}`,
           error,
         );
-        collectionResult.status = "error";
-        collectionResult.error = "collection.failed";
+        collectResult.status = "error";
+        collectResult.error = "collect.failed";
       }
 
-      collectionResults.push(collectionResult);
+      collectResults.push(collectResult);
     }
 
     return c.json({
-      collectionResults,
+      collectResults,
     });
   },
 );

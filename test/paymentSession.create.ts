@@ -2,7 +2,7 @@ import { sendEptrcRequest } from "../src/utils";
 
 const createPaymentSessionRequestBody = JSON.stringify({
   metadata: `{"orderId":"order.123","userId":"user.456"}`,
-  notifyUrl: "https://witty-valley-21.webhook.cool",
+  notifyUrl: "https://peaceful-rain-36.webhook.cool",
 });
 console.dir({ createPaymentSessionRequestBody });
 

@@ -20,6 +20,8 @@ bun run dev
 - `bun run dev`: 本地开发启动（热更新）
 - `bun run lint`: 运行 oxlint
 - `bun run lint:fix`: 运行 oxlint 并自动修复
+- `bun run db:generate`: 根据 schema 变更生成 Drizzle migrations
+- `bun run db:check`: 检查 schema 与 migrations 是否同步
 - `bun run db:push`: 推送 Drizzle schema 到数据库
 - `bun run build:bun`: 构建 Bun 运行时版本到 `dist/`
 - `bun run build:linux-x64`: 构建 Linux x64 可执行文件
@@ -38,7 +40,7 @@ bun run dev
 2. 展示返回的 `address`，引导用户转账
 3. 接收 Webhook（`payment.session.paid` 或 `payment.session.timeout`）
 4. 需要时调用 `POST /paymentSession/detail` 做补偿查询
-5. 定期调用 `POST /wallet/collection` 归集已支付钱包资金
+5. 定期调用 `POST /wallet/collect` 归集已支付钱包资金
 
 ## 金额精度
 
@@ -124,7 +126,7 @@ bun run dev
 
 ### 钱包归集
 
-`POST /wallet/collection`
+`POST /wallet/collect`
 
 请求体：
 
@@ -144,7 +146,7 @@ bun run dev
 
 ```json
 {
-  "collectionResults": [
+  "collectResults": [
     {
       "address": "Txxx...",
       "status": "collected",
@@ -158,7 +160,7 @@ bun run dev
     {
       "address": "Tzzz...",
       "status": "error",
-      "error": "collection.failed"
+      "error": "collect.failed"
     }
   ]
 }

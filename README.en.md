@@ -4,7 +4,7 @@
 
 EPTRC (Easy Payment TRC) is a lightweight TRC20-USDT payment gateway.
 
-Merchant systems can integrate USDT collection with simple HTTP APIs and Webhooks.
+Merchant systems can integrate USDT collection through simple HTTP APIs + Webhook callbacks.
 
 ## Quick Start
 
@@ -20,6 +20,8 @@ Default service URL: `http://localhost:3000`
 - `bun run dev`: start local development server (hot reload)
 - `bun run lint`: run oxlint
 - `bun run lint:fix`: run oxlint with auto fixes
+- `bun run db:generate`: generate Drizzle migrations from schema changes
+- `bun run db:check`: verify schema and migrations are synchronized
 - `bun run db:push`: push Drizzle schema to the database
 - `bun run build:bun`: build Bun runtime version to `dist/`
 - `bun run build:linux-x64`: build Linux x64 executable
@@ -29,16 +31,16 @@ Default service URL: `http://localhost:3000`
 
 ## Authentication
 
-- `GET /` does not require authentication
-- Other endpoints require `X-API-KEY` in request headers
+- `GET /` does not require authentication.
+- Other endpoints require `X-API-KEY` in request headers.
 
 ## Integration Flow
 
 1. Call `POST /paymentSession/create` to create a payment session.
-2. Show the returned `address` and guide the user to transfer funds.
+2. Show the returned `address` and ask the user to transfer funds.
 3. Receive Webhooks (`payment.session.paid` or `payment.session.timeout`).
 4. Call `POST /paymentSession/detail` for reconciliation when needed.
-5. Periodically call `POST /wallet/collection` to collect paid wallet balances.
+5. Periodically call `POST /wallet/collect` to collect paid wallet balances.
 
 ## Amount Precision
 
@@ -48,14 +50,14 @@ Default service URL: `http://localhost:3000`
 
 ## API
 
-- Business processing succeeded: return `HTTP 200`
-- Business processing failed: return `HTTP 4xx` or `HTTP 5xx`
+- Business succeeded: return `HTTP 200`.
+- Business failed: return `HTTP 4xx` or `HTTP 5xx`.
 
 ### Health Check
 
 `GET /`
 
-Response body example (HTTP 200):
+Response example (HTTP 200):
 
 ```json
 {
@@ -78,10 +80,10 @@ Request body:
 }
 ```
 
-- `notifyUrl`: required, callback URL for payment result
-- `metadata`: optional, can be any string and is passed through unchanged in Webhook payload; JSON object string is recommended for easier deserialization on merchant side
+- `notifyUrl`: required callback URL for payment results.
+- `metadata`: optional; any string, passed through unchanged in webhook payload.
 
-Successful response body example (HTTP 200):
+Response example (HTTP 200):
 
 ```json
 {
@@ -103,9 +105,9 @@ Request body:
 }
 ```
 
-Use this endpoint to query session status, paid amount, on-chain transaction ID, and collection state.
+Use this endpoint to query session status, paid amount, blockchain tx id, and collection state.
 
-Successful response body example (HTTP 200):
+Response example (HTTP 200):
 
 ```json
 {
@@ -122,9 +124,9 @@ Successful response body example (HTTP 200):
 }
 ```
 
-### Wallet Collection
+### Wallet Collect
 
-`POST /wallet/collection`
+`POST /wallet/collect`
 
 Request body:
 
@@ -135,16 +137,16 @@ Request body:
 }
 ```
 
-- `toAddress`: destination address for collection
-- `feePayerPrivateKey`: private key of the wallet paying TRX network fees
-- Ensure this private-key address has enough TRX
-- Never expose this private key in frontend code, logs, or public channels
+- `toAddress`: destination address for collection.
+- `feePayerPrivateKey`: private key of the wallet paying TRX network fees.
+- Ensure this key's address has enough TRX.
+- Never expose this key in frontend code, logs, or public channels.
 
-Successful response body example (HTTP 200):
+Response example (HTTP 200):
 
 ```json
 {
-  "collectionResults": [
+  "collectResults": [
     {
       "address": "Txxx...",
       "status": "collected",
@@ -158,7 +160,7 @@ Successful response body example (HTTP 200):
     {
       "address": "Tzzz...",
       "status": "error",
-      "error": "collection.failed"
+      "error": "collect.failed"
     }
   ]
 }
@@ -176,11 +178,11 @@ Content-Type: application/json
 User-Agent: EPTRC/<version>
 ```
 
-Merchant service response requirements:
+Merchant response requirements:
 
-- Your service must return `HTTP 200`; only then does EPTRC mark delivery as successful.
-- Any non-`200` status code is treated as failed delivery and retried (max retries: 10).
-- Always verify that request header `X-API-KEY` matches the `WEBHOOK_KEY` in your current runtime configuration; reject requests on mismatch.
+- Return `HTTP 200` so EPTRC marks delivery as successful.
+- Non-`200` responses are treated as failures and retried (max retries: 10).
+- Verify `X-API-KEY` equals configured `WEBHOOK_KEY` (or fallback `API_KEY` if unset).
 
 Event types:
 
@@ -222,14 +224,14 @@ DB_FILE_NAME=eptrc.sqlite
 TRON_NETWORK=nile
 ```
 
-- `PORT`: service port, default `3000`
-- `API_KEY`: API auth key for business endpoints (`X-API-KEY`)
-- `WEBHOOK_KEY`: auth key used for Webhook delivery; falls back to `API_KEY` if unset
-- `DB_FILE_NAME`: database file name, default `eptrc.sqlite`
-- `TRON_NETWORK`: `nile` for testnet, `main` for mainnet
+- `PORT`: service port, default `3000`.
+- `API_KEY`: auth key for business endpoints (`X-API-KEY`).
+- `WEBHOOK_KEY`: auth key used for webhook delivery; falls back to `API_KEY` if unset.
+- `DB_FILE_NAME`: SQLite database file name, default `eptrc.sqlite`.
+- `TRON_NETWORK`: `nile` for testnet, `main` for mainnet.
 
 ## Support
 
-If this project helps you, you can support it via this TRON address:
+If this project helps you, you can support via this TRON address:
 
 `TTU6hE7tn9UX9XxcbQ3fZMZY3SH4GfMYZy`
