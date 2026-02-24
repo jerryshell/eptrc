@@ -13,7 +13,21 @@ bun install
 bun run dev
 ```
 
-Default service URL: `http://localhost:3000`
+## Environment Variables
+
+```env
+PORT=3000
+API_KEY=it.is.very.secret
+WEBHOOK_KEY=it.is.webhook.secret
+DB_FILE_NAME=eptrc.sqlite
+TRON_NETWORK=nile
+```
+
+- `PORT`: service port, default `3000`.
+- `API_KEY`: auth key for business endpoints (`X-API-KEY`).
+- `WEBHOOK_KEY`: auth key used for webhook delivery; falls back to `API_KEY` if unset.
+- `DB_FILE_NAME`: SQLite database file name, default `eptrc.sqlite`.
+- `TRON_NETWORK`: `nile` for testnet, `main` for mainnet.
 
 ## Scripts
 
@@ -213,22 +227,6 @@ Event types:
   }
 }
 ```
-
-## Environment Variables
-
-```env
-PORT=3000
-API_KEY=it.is.very.secret
-WEBHOOK_KEY=it.is.webhook.secret
-DB_FILE_NAME=eptrc.sqlite
-TRON_NETWORK=nile
-```
-
-- `PORT`: service port, default `3000`.
-- `API_KEY`: auth key for business endpoints (`X-API-KEY`).
-- `WEBHOOK_KEY`: auth key used for webhook delivery; falls back to `API_KEY` if unset.
-- `DB_FILE_NAME`: SQLite database file name, default `eptrc.sqlite`.
-- `TRON_NETWORK`: `nile` for testnet, `main` for mainnet.
 
 ## Support
 

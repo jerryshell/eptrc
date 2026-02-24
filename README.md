@@ -13,7 +13,21 @@ bun install
 bun run dev
 ```
 
-默认服务地址：`http://localhost:3000`
+## 环境变量
+
+```env
+PORT=3000
+API_KEY=it.is.very.secret
+WEBHOOK_KEY=it.is.webhook.secret
+DB_FILE_NAME=eptrc.sqlite
+TRON_NETWORK=nile
+```
+
+- `PORT`: 服务端口，默认 `3000`
+- `API_KEY`: 业务接口鉴权密钥（`X-API-KEY`）
+- `WEBHOOK_KEY`: Webhook 鉴权密钥，未配置时回退到 `API_KEY`
+- `DB_FILE_NAME`: 数据库文件名，默认 `eptrc.sqlite`
+- `TRON_NETWORK`: `nile` 测试网，`main` 主网
 
 ## Scripts
 
@@ -213,22 +227,6 @@ User-Agent: EPTRC/<version>
   }
 }
 ```
-
-## 环境变量
-
-```env
-PORT=3000
-API_KEY=it.is.very.secret
-WEBHOOK_KEY=it.is.webhook.secret
-DB_FILE_NAME=eptrc.sqlite
-TRON_NETWORK=nile
-```
-
-- `PORT`: 服务端口，默认 `3000`
-- `API_KEY`: 业务接口鉴权密钥（`X-API-KEY`）
-- `WEBHOOK_KEY`: Webhook 鉴权密钥，未配置时回退到 `API_KEY`
-- `DB_FILE_NAME`: 数据库文件名，默认 `eptrc.sqlite`
-- `TRON_NETWORK`: `nile` 测试网，`main` 主网
 
 ## 支持我
 
