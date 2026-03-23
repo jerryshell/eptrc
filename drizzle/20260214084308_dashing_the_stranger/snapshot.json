@@ -2,9 +2,7 @@
   "version": "7",
   "dialect": "sqlite",
   "id": "9a9b3671-3c9f-4d94-bda6-334d7a81ba43",
-  "prevIds": [
-    "00000000-0000-0000-0000-000000000000"
-  ],
+  "prevIds": ["00000000-0000-0000-0000-000000000000"],
   "ddl": [
     {
       "name": "notify",
@@ -329,27 +327,21 @@
       "table": "wallet"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "notify_pk",
       "table": "notify",
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "payment_session_pk",
       "table": "payment_session",
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "wallet_pk",
       "table": "wallet",

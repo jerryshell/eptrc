@@ -1,11 +1,6 @@
 import { db } from "./db";
 import { paymentSessionTable, notifyTable } from "./db/schema";
-import {
-  notifyStatus,
-  paymentSessionStatus,
-  contractAddress,
-  webhookKey,
-} from "./constants";
+import { notifyStatus, paymentSessionStatus, contractAddress, webhookKey } from "./constants";
 import { fetchTronInTxList, sendEptrcRequest } from "./utils";
 import { eq, lt, and, asc, gte } from "drizzle-orm";
 
@@ -142,10 +137,7 @@ const isNotifyDueForRetry = (
     return true;
   }
 
-  return (
-    pendingNotify.lastRetryAt + getRetryBackoffMs(pendingNotify.retryCount) <
-    now
-  );
+  return pendingNotify.lastRetryAt + getRetryBackoffMs(pendingNotify.retryCount) < now;
 };
 
 const markNotifyRetried = async (pendingNotify: {
@@ -155,9 +147,7 @@ const markNotifyRetried = async (pendingNotify: {
 }) => {
   const newRetryCount = pendingNotify.retryCount + 1;
   const newStatus =
-    newRetryCount >= pendingNotify.maxRetryCount
-      ? notifyStatus.error
-      : notifyStatus.pending;
+    newRetryCount >= pendingNotify.maxRetryCount ? notifyStatus.error : notifyStatus.pending;
   const lastRetryAt = Date.now();
 
   await db
@@ -178,9 +168,7 @@ export const notifyTask = async () => {
     .from(notifyTable)
     .where(eq(notifyTable.status, notifyStatus.pending));
 
-  for (const pendingNotify of pendingNotifyList.filter((item) =>
-    isNotifyDueForRetry(item, now),
-  )) {
+  for (const pendingNotify of pendingNotifyList.filter((item) => isNotifyDueForRetry(item, now))) {
     try {
       const response = await sendEptrcRequest({
         url: pendingNotify.notifyUrl,

@@ -2,8 +2,7 @@ import { sendEptrcRequest } from "../src/utils";
 
 const walletCollectRequestBody = JSON.stringify({
   toAddress: "TDVZJznLGjXZZd44geotpwwrrgSor6sotF",
-  feePayerPrivateKey:
-    "261217AF2FE7B3755874D49F47899CBA76B76F65F2292D27E4F0DE55D17F48A4",
+  feePayerPrivateKey: "261217AF2FE7B3755874D49F47899CBA76B76F65F2292D27E4F0DE55D17F48A4",
 });
 console.dir({ walletCollectRequestBody });
 

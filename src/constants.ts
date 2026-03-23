@@ -18,9 +18,7 @@ const tronNetworkConfigs = {
 };
 
 const selectedNetworkConfig =
-  process.env.TRON_NETWORK === "nile"
-    ? tronNetworkConfigs.nile
-    : tronNetworkConfigs.main;
+  process.env.TRON_NETWORK === "nile" ? tronNetworkConfigs.nile : tronNetworkConfigs.main;
 export const tronGridBaseUrl = selectedNetworkConfig.tronGridBaseUrl;
 export const contractAddress = selectedNetworkConfig.contractAddress;
 

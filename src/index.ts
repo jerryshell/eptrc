@@ -158,17 +158,11 @@ app.post(
         wallet: walletTable,
       })
       .from(paymentSessionTable)
-      .innerJoin(
-        walletTable,
-        eq(walletTable.address, paymentSessionTable.address),
-      )
+      .innerJoin(walletTable, eq(walletTable.address, paymentSessionTable.address))
       .where(
         and(
           eq(paymentSessionTable.status, paymentSessionStatus.paid),
-          or(
-            eq(paymentSessionTable.collected, 0),
-            isNull(paymentSessionTable.collected),
-          ),
+          or(eq(paymentSessionTable.collected, 0), isNull(paymentSessionTable.collected)),
         ),
       );
 
@@ -212,10 +206,7 @@ app.post(
         collectResult.amount = walletTokenBalance;
         collectResult.txId = collectTxId;
       } catch (error) {
-        console.error(
-          `Failed to collect TRC20 from wallet ${wallet.address}`,
-          error,
-        );
+        console.error(`Failed to collect TRC20 from wallet ${wallet.address}`, error);
         collectResult.status = "error";
         collectResult.error = "collect.failed";
       }

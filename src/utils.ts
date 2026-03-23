@@ -29,9 +29,7 @@ const getChainParameterSun = async (
   missingParameterErrorCode: string,
 ) => {
   const chainParameters = await client.trx.getChainParameters();
-  const parameterValue = chainParameters.find(
-    (parameter) => parameter.key === parameterKey,
-  )?.value;
+  const parameterValue = chainParameters.find((parameter) => parameter.key === parameterKey)?.value;
   console.dir({ [parameterKey]: parameterValue });
 
   if (!parameterValue || parameterValue <= 0) {
@@ -79,22 +77,16 @@ const estimateBandwidthFeeSun = async ({
   transferParams: ReturnType<typeof createTrc20TransferParams>;
   fromAddress: string;
 }) => {
-  const [bandwidthFeeSun, bandwidthUsage, accountResources] = await Promise.all(
-    [
-      getChainParameterSun(
-        client,
-        "getTransactionFee",
-        "bandwidth.fee.not.available",
-      ),
-      estimateBandwidthUsage({
-        client,
-        contractAddress,
-        transferParams,
-        fromAddress,
-      }),
-      client.trx.getAccountResources(fromAddress),
-    ],
-  );
+  const [bandwidthFeeSun, bandwidthUsage, accountResources] = await Promise.all([
+    getChainParameterSun(client, "getTransactionFee", "bandwidth.fee.not.available"),
+    estimateBandwidthUsage({
+      client,
+      contractAddress,
+      transferParams,
+      fromAddress,
+    }),
+    client.trx.getAccountResources(fromAddress),
+  ]);
 
   const freeNetLimit = Number(accountResources.freeNetLimit ?? 0);
   const freeNetUsed = Number(accountResources.freeNetUsed ?? 0);
@@ -202,10 +194,7 @@ export const sendTrc20Transaction = async ({
     privateKey,
   });
 
-  const tokenContract = await senderClient.contract(
-    contractAbi,
-    contractAddress,
-  );
+  const tokenContract = await senderClient.contract(contractAbi, contractAddress);
 
   const fromAddress = TronWeb.address.fromPrivateKey(privateKey);
   if (!fromAddress) {
@@ -220,9 +209,7 @@ export const sendTrc20Transaction = async ({
   });
   console.dir({ requiredFeeBalanceSun });
 
-  const currentTrxBalanceSun = Number(
-    await senderClient.trx.getBalance(fromAddress),
-  );
+  const currentTrxBalanceSun = Number(await senderClient.trx.getBalance(fromAddress));
   if (currentTrxBalanceSun < requiredFeeBalanceSun) {
     const feePayerClient = new TronWeb({
       fullHost: tronGridBaseUrl,
@@ -230,10 +217,7 @@ export const sendTrc20Transaction = async ({
     });
 
     const topUpAmountSun = requiredFeeBalanceSun - currentTrxBalanceSun;
-    const topUpResult = await feePayerClient.trx.sendTransaction(
-      fromAddress,
-      topUpAmountSun,
-    );
+    const topUpResult = await feePayerClient.trx.sendTransaction(fromAddress, topUpAmountSun);
     if (!topUpResult.result) {
       throw new Error("top.up.trx.failed");
     }
