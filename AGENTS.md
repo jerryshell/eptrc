@@ -4,4 +4,3 @@
 - 变量名符合意图
 - 函数排序最高层放在最前面
 - 充分使用 Bun
-- https://bun.com/docs/runtime/cron.md
